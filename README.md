@@ -72,7 +72,7 @@ No powershell em modo administrador, substitua a url pela mesma que você faz o 
 netsh interface portproxy set v4tov4 listenport=1433 listenaddress=0.0.0.0 connectport=1433 connectaddress=<seu_dominio>
 ```
 
-Obs.: O portproxy só é necessário quando você quer conceder acesso de algo hospedado no WSL da sua maquina para outra máquina da rede que não seja a sua.
+***Obs.:** O portproxy só é necessário quando você quer conceder acesso de algo hospedado no WSL da sua maquina para outra máquina da rede que não seja a sua.*
 
 ##  Desfazendo portproxy
 
@@ -81,15 +81,17 @@ Execute os seguintes comandos:
 ```powershell
 netsh interface portproxy delete v4tov4 listenport=1433 listenaddress=0.0.0.0
 ```
-## Acessando o servoidor de banco de dados
+## Acessando o servidor de banco de dados no Windows
 
-Basta apenas incluir o `[::1]` que trata-se do **localhost** do Ipv6 e tentar-se conectar com qualquer sistema gerenciador de banco de dados, por exemplo, DBeaver ou SQL Server Management Studio (SSMS).
+Basta apenas incluir o `[::1]` como host de conexão e tentar-se conectar com qualquer sistema gerenciador de banco de dados, por exemplo, DBeaver ou SQL Server Management Studio (SSMS).
+
+O [::1] trata-se do endereço **IPv6** representado pelo endereço unicast 0:0:0:0:0:0:0:1 ou ::1 (equivalente ao endereço **IPv4** loopback 127.0.0.1).
 
 # Criando a base de dados
 
 ## Fazendo restore de um de uma banco de dados pelo utilitario mssql-tools (Ferramenta de linha de comando do SQL Server no Linux)
 
-Necessario executar o script abaixo, alterando os parametros conforme banco de dados:
+Necessario executar o script abaixo, alterando os parametros conforme banco de dados a ser restaurado:
 
 ```bash
 sudo docker exec -it sqlserver /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P '<YourStrong!Passw0rd>' -Q "RESTORE DATABASE [2-1-7] FROM DISK = N'/var/opt/mssql/restore/eqteste_2_01_07.bak' WITH MOVE 'eqteste_2_01_07' TO '/var/opt/mssql/data/eqteste_2_01_07.mdf', MOVE 'eqteste_2_01_07_Log' TO '/var/opt/mssql/data/eqteste_2_01_07.ldf'"
@@ -98,7 +100,6 @@ sudo docker exec -it sqlserver /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P
 Mais infromações sobre como restaurar um banco de dados SQL Server em um contêiner do Docker em Linux utilizando o mssql-tools clique [aqui!](https://learn.microsoft.com/pt-br/sql/linux/sql-server-linux-setup-tools?view=sql-server-ver16) (este utilitario já esta instalado no container por padrão)
 
 # Dados disponíveis ao usar o container
-
 
 Dados da base pra conexão com o servidor SQL Server:
 
