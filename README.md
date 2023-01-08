@@ -1,6 +1,6 @@
 # Criando pasta de scripts auxiliares
 
-## Este passo não é necesssário, caso você já possua uma forma de organizar os scripts, pode seguir da sua forma porém tenha em mente que precisaremos guardar um script em algum local
+## Este passo não é necesssário, caso você já possua uma forma de organizar os scripts, pode seguir da sua forma porém tenha em mente que precisaremos guardar um script em algum local no Linux (WSL)
 
 1. Acesse a pasta root do seu WSL
     - Ex: `cd /root`
@@ -13,7 +13,7 @@
     - Ex: cd `/root/scripts`
 2. Crie um arquivo sh para salvar nosso script
     - Ex: `touch subir_mssql.sh`
-3. Pelo windows, abra o arquivo e cole o código disponibilizado abaixo:
+3. Pelo Windows ou Linux (WSL), abra o arquivo e cole o código disponibilizado abaixo, altere o parametro de senha do usuario SA `<YourStrong!Passw0rd>` conforme necessario:
 
 ```bash
 #!/bin/bash
@@ -43,7 +43,7 @@ if [ ! -f "$sqlServerFile" ]; then
    echo "      image: mcr.microsoft.com/mssql/server:2019-latest";
    echo "      environment:";
    echo "         - ACCEPT_EULA=Y";
-   echo "         - MSSQL_SA_PASSWORD=Soft@123";
+   echo "         - MSSQL_SA_PASSWORD=<YourStrong!Passw0rd>";
    echo "         - MSSQL_PID=Developer";
    echo "      ports:";
    echo "         - \"1433:1433\"";
@@ -62,7 +62,9 @@ sudo docker-compose -f $sqlServerFile up -d
 1. Para subir o nosso container, basta executar o script auxiliar
     - Ex: `sh ~/scripts/subir_mssql.sh`
 
-# Fazendo portproxy para acessar no windows
+# Acessando o Servidor de Banco de dados do Windows 
+
+## Fazendo portproxy para acessar no windows
 
 No powershell em modo administrador, substitua a url pela mesma que você faz o uso para acessar a suite e execute os comandos
 
@@ -70,22 +72,35 @@ No powershell em modo administrador, substitua a url pela mesma que você faz o 
 netsh interface portproxy set v4tov4 listenport=1433 listenaddress=0.0.0.0 connectport=1433 connectaddress=<seu_dominio>
 ```
 
-# Desfazendo portproxy
+Obs.: O portproxy só é necessário quando você quer conceder acesso de algo hospedado no WSL da sua maquina para outra máquina da rede que não seja a sua.
+
+##  Desfazendo portproxy
+
 Execute os seguintes comandos:
 
 ```powershell
 netsh interface portproxy delete v4tov4 listenport=1433 listenaddress=0.0.0.0
 ```
+## Acessando o servoidor de banco de dados
+
+Basta apenas incluir o `[::1]` que trata-se do **localhost** do Ipv6 e tentar-se conectar com qualquer sistema gerenciador de banco de dados, por exemplo, DBeaver ou SQL Server Management Studio (SSMS).
 
 # Criando a base de dados
 
-## Importando um bkp de base
+## Fazendo restore de um de uma banco de dados pelo utilitario mssql-tools (Ferramenta de linha de comando do SQL Server no Linux)
 
-...
+Necessario executar o script abaixo, alterando os parametros conforme banco de dados:
+
+```bash
+sudo docker exec -it sqlserver /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P '<YourStrong!Passw0rd>' -Q "RESTORE DATABASE [2-1-7] FROM DISK = N'/var/opt/mssql/restore/eqteste_2_01_07.bak' WITH MOVE 'eqteste_2_01_07' TO '/var/opt/mssql/data/eqteste_2_01_07.mdf', MOVE 'eqteste_2_01_07_Log' TO '/var/opt/mssql/data/eqteste_2_01_07.ldf'"
+```
+
+Mais infromações sobre como restaurar um banco de dados SQL Server em um contêiner do Docker em Linux utilizando o mssql-tools clique [aqui!](https://learn.microsoft.com/pt-br/sql/linux/sql-server-linux-setup-tools?view=sql-server-ver16) (este utilitario já esta instalado no container por padrão)
 
 # Dados disponíveis ao usar o container
 
+
 Dados da base pra conexão com o servidor SQL Server:
 
-Usuário: sa
-Senha: Soft@123
+- Usuário: sa
+- Senha: <YourStrong!Passw0rd>
