@@ -1,0 +1,18 @@
+version: '3'
+
+services:
+  sqlserver:
+    container_name: sqlserver
+    hostname: sqlserver
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=Soft@123
+      - MSSQL_PID=Developer
+    ports:
+        - "1433:1433"
+    volumes:
+      - /root/mssql/data:/var/opt/mssql/data
+      - /root/mssql/restore:/var/opt/mssql/restore
+      - /root/mssql/log:/var/opt/mssql/log
+      - /root/mssql/secrets:/var/opt/mssql/secrets
