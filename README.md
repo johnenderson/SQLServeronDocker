@@ -89,7 +89,7 @@ O [::1] trata-se do endereço **IPv6** representado pelo endereço unicast 0:0:0
 
 # Criando a base de dados
 
-## Fazendo restore de um de uma banco de dados pelo utilitario mssql-tools (Ferramenta de linha de comando do SQL Server no Linux)
+## Fazendo restore de um banco de dados pelo utilitario mssql-tools (Ferramenta de linha de comando do SQL Server no Linux)
 
 Necessario executar o script abaixo, alterando os parametros conforme banco de dados a ser restaurado:
 
